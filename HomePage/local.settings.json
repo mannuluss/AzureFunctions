@@ -1,0 +1,13 @@
+{
+    "IsEncrypted": false,
+    "Values": {
+        "MYSQL_URL": "mysql-repository.mysql.database.azure.com",
+        "MYSQL_PORT": 3306,
+        "MYSQL_USER": "administrador",
+        "MYSQL_PWD": "%uTVtNe7",
+        "MYSQL_DB": "trabajo_spa",
+        "MYSQL_CRT": false,
+        "MYSQL_CRT_FILE": "./DB_CA.crt.pem",
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true"
+    }
+}
