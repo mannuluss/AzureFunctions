@@ -11,9 +11,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = require("../shared/database");
 const getImage = (idImage) => __awaiter(void 0, void 0, void 0, function* () {
-    //var buffer = Buffer.from(await blobFile.arrayBuffer());//await blobFile.arrayBuffer();
+    let query = "";
+    if (idImage) {
+        query = `SELECT * FROM config_repository.resources res WHERE res.id = ${idImage}`;
+    }
+    else {
+        query = `SELECT * FROM config_repository.resources res`;
+    }
     return new Promise((resolve, reject) => {
-        database_1.default.query(`SELECT res.blobFile FROM config_repository.resources res WHERE res.id = ${idImage}`, (err, rows, fields) => {
+        database_1.default.query(query, (err, rows) => {
             if (err) {
                 console.error(err);
                 return reject(err);
@@ -26,22 +32,28 @@ const getImage = (idImage) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const httpTrigger = function (context, req) {
     return __awaiter(this, void 0, void 0, function* () {
-        context.log("GET IMAGE");
-        let image = yield getImage(req.params.id);
-        const base64Image = image[0].blobFile; //Buffer.from(image[0].blobFile, 'base64');
-        console.log("LENGTH GET DB " + base64Image.length);
-        const buffer = new Buffer(base64Image.split(",")[1], "base64");
-        context.res = {
-            status: 200 /* Defaults to 200 */,
-            isRaw: true,
-            headers: {
-                //"Content-Disposition": "attachment; filename=imagen.png",
-                "Content-Type": "text/plain",
-                /*Connection: "Keep-Alive",
-                "Keep-Alive": "timeout=5",*/
-            },
-            body: { img: base64Image.split(",")[1] }, //Buffer.from(fileBuffer, "base64"),
-        };
+        context.log("GET IMAGE " + req.params.id);
+        if (req.params.id != "all") {
+            let image = yield getImage(req.params.id);
+            context.res = {
+                status: 200,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: image[0],
+            };
+        }
+        else {
+            let images = yield getImage();
+            //Obtener todas las imagenes
+            context.res = {
+                status: 200,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: images,
+            };
+        }
     });
 };
 exports.default = httpTrigger;

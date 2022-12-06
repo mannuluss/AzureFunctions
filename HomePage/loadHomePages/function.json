@@ -13,15 +13,8 @@
     {
       "type": "http",
       "direction": "out",
-      "name": "$return"
-    },
-    {
-      "name": "storage",
-      "type": "blob",
-      "path": "{username}/{filename}",
-      "direction": "out",
-      "connection": "AzureWebJobsStorage"
-  }
+      "name": "res"
+    }
   ],
   "scriptFile": "../dist/LoadHomePages/index.js"
 }

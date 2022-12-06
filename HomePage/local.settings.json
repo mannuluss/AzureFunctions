@@ -9,5 +9,8 @@
         "MYSQL_CRT": false,
         "MYSQL_CRT_FILE": "./DB_CA.crt.pem",
         "AzureWebJobsStorage": "UseDevelopmentStorage=true"
+    },
+    "Host": {
+        "CORS": "*"
     }
 }
