@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const database_1 = require("../shared/database");
+const util_1 = require("../shared/util");
 const getImage = (idImage) => __awaiter(void 0, void 0, void 0, function* () {
     let query = "";
     if (idImage) {
@@ -25,7 +26,7 @@ const getImage = (idImage) => __awaiter(void 0, void 0, void 0, function* () {
                 return reject(err);
             }
             else {
-                return resolve(rows);
+                return resolve(idImage ? rows[0] : rows);
             }
         });
     });
@@ -35,13 +36,19 @@ const httpTrigger = function (context, req) {
         context.log("GET IMAGE " + req.params.id);
         if (req.params.id != "all") {
             let image = yield getImage(req.params.id);
-            context.res = {
-                status: 200,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: image[0],
-            };
+            if (image) {
+                context.res = {
+                    status: 200,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: image,
+                };
+            }
+            else {
+                (0, util_1.Eror404)(context);
+                return;
+            }
         }
         else {
             let images = yield getImage();
@@ -51,7 +58,7 @@ const httpTrigger = function (context, req) {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: images,
+                body: images ? images : util_1.Eror404,
             };
         }
     });

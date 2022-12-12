@@ -1,7 +1,8 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 import database from "../shared/database";
+import { Eror404 } from "../shared/util";
 
-const getImage = async (idImage?: any): Promise<any[]> => {
+const getImage = async (idImage?: any): Promise<any[] | any> => {
   let query = "";
   if (idImage) {
     query = `SELECT * FROM config_repository.resources res WHERE res.id = ${idImage}`;
@@ -14,7 +15,7 @@ const getImage = async (idImage?: any): Promise<any[]> => {
         console.error(err);
         return reject(err);
       } else {
-        return resolve(rows);
+        return resolve(idImage ? rows[0] : rows);
       }
     });
   });
@@ -27,13 +28,18 @@ const httpTrigger: AzureFunction = async function (
   context.log("GET IMAGE " + req.params.id);
   if (req.params.id != "all") {
     let image = await getImage(req.params.id);
-    context.res = {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: image[0],
-    };
+    if (image) {
+      context.res = {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: image,
+      };
+    } else {
+      Eror404(context);
+      return;
+    }
   } else {
     let images = await getImage();
     //Obtener todas las imagenes
@@ -42,7 +48,7 @@ const httpTrigger: AzureFunction = async function (
       headers: {
         "Content-Type": "application/json",
       },
-      body: images,
+      body: images ? images : Eror404,
     };
   }
 };
