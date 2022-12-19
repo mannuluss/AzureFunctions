@@ -58,7 +58,7 @@ const httpTrigger = function (context, req) {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: images ? images : util_1.Eror404,
+                body: images,
             };
         }
     });

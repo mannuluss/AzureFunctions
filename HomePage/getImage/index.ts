@@ -48,7 +48,7 @@ const httpTrigger: AzureFunction = async function (
       headers: {
         "Content-Type": "application/json",
       },
-      body: images ? images : Eror404,
+      body: images,
     };
   }
 };
