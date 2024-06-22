@@ -10,6 +10,10 @@ export const PersonaModal = MysqlSequelizeDb.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    activo: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    }
   },
   {
     // Other model options go here

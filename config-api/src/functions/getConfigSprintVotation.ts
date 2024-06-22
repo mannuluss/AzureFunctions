@@ -16,6 +16,9 @@ const getConfig = async (idUsuario) => {
       id: {
         [Op.ne]: idUsuario,
       },
+      activo: {
+        [Op.ne]: false,
+      },
     },
   });
 
